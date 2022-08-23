@@ -454,6 +454,128 @@ test('legacy target', async () => {
   })
 })
 
+test('legacy-with-not target', async () => {
+  let config = {
+    plugins: [typographyPlugin({ target: 'legacy-with-not' })],
+    content: [
+      { raw: html`<div class="prose prose-h1:text-center prose-headings:text-ellipsis"></div>` },
+    ],
+    theme: {
+      typography: {
+        DEFAULT: {
+          css: [
+            {
+              color: 'var(--tw-prose-body)',
+              maxWidth: '65ch',
+              '[class~="lead"]': {
+                color: 'var(--tw-prose-lead)',
+              },
+              strong: {
+                color: 'var(--tw-prose-bold)',
+                fontWeight: '600',
+              },
+              'ol[type="A"]': {
+                listStyleType: 'upper-alpha',
+              },
+              'blockquote p:first-of-type::before': {
+                content: 'open-quote',
+              },
+              'blockquote p:last-of-type::after': {
+                content: 'close-quote',
+              },
+              'h4 strong': {
+                fontWeight: '700',
+              },
+              'figure > *': {
+                margin: 0,
+              },
+              'ol > li::marker': {
+                fontWeight: '400',
+                color: 'var(--tw-prose-counters)',
+              },
+              'code::before': {
+                content: '"&#96;"',
+              },
+              'code::after': {
+                content: '"&#96;"',
+              },
+            },
+          ],
+        },
+      },
+    },
+  }
+
+  return run(config).then((result) => {
+    expect(result.css).toMatchFormattedCss(
+      css`
+        ${defaults}
+
+        .prose {
+          color: var(--tw-prose-body);
+          max-width: 65ch;
+        }
+        .prose [class~='lead']:not([class~="not-prose"] *) {
+          color: var(--tw-prose-lead);
+        }
+        .prose strong:not([class~="not-prose"] *) {
+          color: var(--tw-prose-bold);
+          font-weight: 600;
+        }
+        .prose ol[type='A']:not([class~="not-prose"] *) {
+          list-style-type: upper-alpha;
+        }
+        .prose blockquote p:first-of-type:not([class~="not-prose"] *)::before {
+          content: open-quote;
+        }
+        .prose blockquote p:last-of-type:not([class~="not-prose"] *)::after {
+          content: close-quote;
+        }
+        .prose h4 strong:not([class~="not-prose"] *) {
+          font-weight: 700;
+        }
+        .prose figure > *:not([class~="not-prose"] *) {
+          margin: 0;
+        }
+        .prose ol > li:not([class~="not-prose"] *)::marker {
+          font-weight: 400;
+          color: var(--tw-prose-counters);
+        }
+        .prose code:not([class~="not-prose"] *)::before {
+          content: '&#96;';
+        }
+        .prose code:not([class~="not-prose"] *)::after {
+          content: '&#96;';
+        }
+        .prose-headings\:text-ellipsis h1:not([class~="not-prose"] *) {
+          text-overflow: ellipsis;
+        }
+        .prose-headings\:text-ellipsis h2:not([class~="not-prose"] *) {
+          text-overflow: ellipsis;
+        }
+        .prose-headings\:text-ellipsis h3:not([class~="not-prose"] *) {
+          text-overflow: ellipsis;
+        }
+        .prose-headings\:text-ellipsis h4:not([class~="not-prose"] *) {
+          text-overflow: ellipsis;
+        }
+        .prose-headings\:text-ellipsis h5:not([class~="not-prose"] *) {
+          text-overflow: ellipsis;
+        }
+        .prose-headings\:text-ellipsis h6:not([class~="not-prose"] *) {
+          text-overflow: ellipsis;
+        }
+        .prose-headings\:text-ellipsis th:not([class~="not-prose"] *) {
+          text-overflow: ellipsis;
+        }
+        .prose-h1\:text-center h1:not([class~="not-prose"] *) {
+          text-align: center;
+        }
+      `
+    )
+  })
+})
+
 test('custom class name', async () => {
   let config = {
     plugins: [typographyPlugin({ className: 'markdown' })],

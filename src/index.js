@@ -9,7 +9,7 @@ const computed = {
   // bulletColor: (color) => ({ 'ul > li::before': { backgroundColor: color } }),
 }
 
-function inWhere(selector, { className, prefix }) {
+function inWhere(selector, { target, className, prefix }) {
   let prefixedNot = prefix(`.not-${className}`).slice(1)
   let selectorPrefix = selector.startsWith('>') ? `.${className} ` : ''
 
@@ -17,10 +17,32 @@ function inWhere(selector, { className, prefix }) {
   let [trailingPseudo, rebuiltSelector] = commonTrailingPseudos(selector)
 
   if (trailingPseudo) {
+    if (target === 'legacy-with-not') {
+      return `${rebuiltSelector}:not([class~="${prefixedNot}"] *)${trailingPseudo}`
+    }
+
     return `:where(${selectorPrefix}${rebuiltSelector}):not(:where([class~="${prefixedNot}"] *))${trailingPseudo}`
   }
 
+  if (target === 'legacy-with-not') {
+    return `${selector}:not([class~="${prefixedNot}"] *)`
+  }
+
   return `:where(${selectorPrefix}${selector}):not(:where([class~="${prefixedNot}"] *))`
+}
+
+function getVariantSelector(selectors, options) {
+  const { target } = options;
+
+  if (target === 'legacy') {
+    return selectors.map((selector) => `& ${selector}`)
+  }
+
+  if (target === 'legacy-with-not') {
+    return selectors.map((selector) => `& ${inWhere(selector, options)}`)
+  }
+
+  return `& :is(${inWhere(selectors.join(', '), options)})`
 }
 
 function isObject(value) {
@@ -41,13 +63,13 @@ function configToCss(config = {}, { target, className, prefix }) {
       let nested = Object.values(v).some(isObject)
       if (nested) {
         return [
-          inWhere(k, { className, prefix }),
+          inWhere(k, { target, className, prefix }),
           v,
           Object.fromEntries(Object.entries(v).map(([k, v]) => updateSelector(k, v))),
         ]
       }
 
-      return [inWhere(k, { className, prefix }), v]
+      return [inWhere(k, { target, className, prefix }), v]
     }
 
     return [k, v]
@@ -71,7 +93,7 @@ module.exports = plugin.withOptions(
     return function ({ addVariant, addComponents, theme, prefix }) {
       let modifiers = theme('typography')
 
-      let options = { className, prefix }
+      let options = { target, className, prefix }
 
       for (let [name, ...selectors] of [
         ['headings', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'th'],
@@ -105,13 +127,7 @@ module.exports = plugin.withOptions(
       ]) {
         selectors = selectors.length === 0 ? [name] : selectors
 
-        let selector =
-          target === 'legacy' ? selectors.map((selector) => `& ${selector}`) : selectors.join(', ')
-
-        addVariant(
-          `${className}-${name}`,
-          target === 'legacy' ? selector : `& :is(${inWhere(selector, options)})`
-        )
+        addVariant(`${className}-${name}`, getVariantSelector(selectors, options))
       }
 
       addComponents(
