@@ -15,9 +15,9 @@ This is a fork of the official [@tailwindcss/typography](https://github.com/tail
 
 ## Why
 
-Undoing style by `not-prose` is not working with `target: legacy` in official plugin `@tailwindcss/typography`, See [this issue](https://github.com/tailwindlabs/tailwindcss-typography/issues/277) for more info. In order to use `not-prose` normally in lower version browsers, I fork it and add a new target: `legacy-with-not`.
+Undoing style by `not-prose` is not working with `target: legacy` in official plugin `@tailwindcss/typography`, See [this issue](https://github.com/tailwindlabs/tailwindcss-typography/issues/277) for more info. In order to use `not-prose` normally in lower version browsers, I fork it and add a new target: `legacy-not-prose`.
 
-In target `legacy-with-not`, the plugin will generate the code like this:
+In target `legacy-not-prose`, the plugin will generate the code like this:
 
 ```css
 .prose strong:not([class~="not-prose"] *) {

@@ -454,9 +454,9 @@ test('legacy target', async () => {
   })
 })
 
-test('legacy-with-not target', async () => {
+test('legacy-not-prose target', async () => {
   let config = {
-    plugins: [typographyPlugin({ target: 'legacy-with-not' })],
+    plugins: [typographyPlugin({ target: 'legacy-not-prose' })],
     content: [
       { raw: html`<div class="prose prose-h1:text-center prose-headings:text-ellipsis"></div>` },
     ],

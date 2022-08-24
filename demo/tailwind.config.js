@@ -29,5 +29,5 @@ module.exports = {
     },
   },
   variants: {},
-  plugins: [require('../src/index.js')({ target: 'legacy-with-not' })],
+  plugins: [require('../src/index.js')({ target: 'legacy-not-prose' })],
 }

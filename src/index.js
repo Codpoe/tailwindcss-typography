@@ -17,14 +17,14 @@ function inWhere(selector, { target, className, prefix }) {
   let [trailingPseudo, rebuiltSelector] = commonTrailingPseudos(selector)
 
   if (trailingPseudo) {
-    if (target === 'legacy-with-not') {
+    if (target === 'legacy-not-prose') {
       return `${rebuiltSelector}:not([class~="${prefixedNot}"] *)${trailingPseudo}`
     }
 
     return `:where(${selectorPrefix}${rebuiltSelector}):not(:where([class~="${prefixedNot}"] *))${trailingPseudo}`
   }
 
-  if (target === 'legacy-with-not') {
+  if (target === 'legacy-not-prose') {
     return `${selector}:not([class~="${prefixedNot}"] *)`
   }
 
@@ -38,7 +38,7 @@ function getVariantSelector(selectors, options) {
     return selectors.map((selector) => `& ${selector}`)
   }
 
-  if (target === 'legacy-with-not') {
+  if (target === 'legacy-not-prose') {
     return selectors.map((selector) => `& ${inWhere(selector, options)}`)
   }
 
