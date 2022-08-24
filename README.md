@@ -37,7 +37,7 @@ The above code works fine in lower version browsers, except the CSS weights will
 ## Installation
 
 ```sh
-npm install -D tailwindcss-typography
+npm install -D tailwind-typography
 ```
 
 ## Documentation
